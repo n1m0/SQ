@@ -1,0 +1,10 @@
+package test;
+
+import java.util.UUID;
+
+public class Test {
+	public static void main(String[] args) {
+		String code = UUID.randomUUID().toString();
+		System.out.println(code);
+	}
+}

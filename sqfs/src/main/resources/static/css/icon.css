@@ -1,0 +1,255 @@
+﻿.icon{ background: url("../img/icon/s-icon.png");_background: url("../img/icon/s-icon.gif");display:inline-block;display:-moz-inline-stack; zoom:1;*display:inline;}
+.upward-icon {
+    width: 17px;
+    height: 10px;
+    *height: 14px;
+    background-position:-15px -165px;
+}
+.downward-icon {
+    width: 17px;
+    height: 10px;
+    *height: 14px;
+    background-position:-37px -165px;
+}
+.lg-phone-icon {
+    width: 24px;
+    height: 30px;
+    background-position: -90px -33px;
+}
+.reg-suc-icon {
+    background: url("../img/icon/resultsuc.png");
+    width: 52px;
+    height: 52px;
+}
+.reg-fail-icon{
+    background: url("../img/icon/resultfail.png");
+    width: 52px;
+    height: 52px;
+}
+.ft-qq {
+    width: 36px;
+    height: 30px;
+    cursor: pointer;
+    background-position: -127px -29px;
+}
+.ft-qq:hover {
+    height: 36px;
+   background-position: -127px -61px;
+}
+.ft-sina {
+    width: 36px;
+    height: 30px;
+    background-position: -175px -30px;
+    cursor: pointer;
+}
+.ft-sina:hover {
+    height: 36px;
+    background-position: -172px -61px;
+}
+.ft-weixin {
+    width: 36px;
+    height: 30px;
+    background-position: -219px -29px;
+    cursor: pointer;
+}
+.ft-weixin:hover {
+    height: 36px;
+    background-position: -219px -61px;
+}
+.errormsg {
+    background: url("../img/icon/validate.png");
+    _background: url("../img/icon/validate.gif");
+}
+.horn-icon {
+    background-position:108px 80px;
+    width: 22px;
+    height: 22px;
+}
+.calculator-icon {
+    background-position:163px 80px;
+    width: 22px;
+    height: 22px;
+}
+.cake-icon {
+    background-position:191px 80px;
+    width: 22px;
+    height: 22px;
+}
+.a-phone-icon {
+    background-position:-44px -100px;
+    height: 29px;
+    width: 16px;
+}
+.a-phone-icon.on {
+    background-position:-44px -127px;
+}
+.a-user-icon {
+    background-position: -12px -100px;
+    height: 29px;
+    width: 25px;
+}
+.a-user-icon.on {
+    background-position: -12px -127px;
+}
+.a-card-icon {
+   background-position: -107px -100px;
+    height: 29px;
+    width: 35px;
+}
+.a-card-icon.on {
+   background-position: -107px -127px;
+}
+.a-mail-icon {
+    background-position: -70px -100px;
+    height: 29px;
+    width: 30px;
+}
+.a-mail-icon.on {
+    background-position: -70px -127px;
+}
+.fbmodalicon {
+    background-position:-65px -163px;
+    height: 19px;
+    width: 20px;
+    margin-top: 13px;
+    cursor: pointer;
+}
+.noteicon {
+    background-position:-287px -103px;
+    width: 22px;
+    height: 26px;
+}
+.moneydicon {
+    background-position:-151px -137px;
+    width: 18px;
+    height: 20px;
+    float: left;
+    margin-right: 12px;
+    margin-top: 6px;
+}
+.moneyticon {
+    background-position:-180px -136px;
+    width: 18px;
+    height: 20px;
+    float: left;
+     margin-right:12px;
+       margin-top: 6px;
+}
+.calicon {
+    background-position:-206px -136px;
+    width: 20px;
+    height: 20px;
+    float: left;
+     margin-right: 11px;
+       margin-top: 6px;
+}
+.y-icon {
+    width: 17px;
+    height: 17px;
+    background-position: -38px -10px;
+}
+.n-icon {
+    width: 17px;
+    height: 17px;
+    background-position: -234px -137px;
+}
+.rightA-icon {
+    width: 11px;
+    height: 17px;
+    background-position:-261px -137px;
+}
+.radio-y {
+    width: 18px;
+    height: 17px;
+    background-position: -62px -10px;
+    margin-top: 9px;
+    margin-left: 5px;
+}
+.icon_guide ,.labeltxt ,.guidetabicon {
+    background: url("../img/modal/guide_title.png") no-repeat;
+    _background: url("../img/modal/guide_title.gif") no-repeat;
+    display: block;
+    float: left;
+}
+.icon_guide {
+    height: 83px;
+    width: 129px;
+}
+.labeltxt {
+    height: 42px;
+    width: 700px;
+    margin-top: 35px;
+}
+.icon_guide.icon_guide_no1 {
+    background-position: 0 0;
+}
+.icon_guide.icon_guide_no2 {
+    background-position: -134px 0;
+}
+.icon_guide.icon_guide_no3 {
+    background-position: -275px 0;
+}
+.labeltxt.label1 {
+    background-position: 0 -93px;
+}
+.labeltxt.label2 {
+    background-position: 0 -152px;
+}
+.labeltxt.label3 {
+    background-position: 0 -211px;
+}
+.labeltxt.label4 {
+    height: 48px;
+    background-position: 0 -272px;
+}
+.labeltxt.label5 {
+    background-position: 0 -337px;
+    height: 48px;
+}
+.labeltxt.label6 {
+    background-position: 0 -404px;
+}
+.icon_interestcalculate {
+    background-position:-148px -105px;
+    height: 26px;
+    width: 19px;
+    margin-top: 15px;
+    margin-right: 5px;
+    float: left;
+}
+.tbicon {
+    background: url("../img/icon/tbicon.png") no-repeat;
+    width: 18px;
+    height: 20px;
+    display: block;
+    float: left;
+    margin-top: 5px;
+}
+.tbicon.rx {
+    background-position: 0 1px;
+}
+.tbicon.bx {
+    background-position: -20px 1px;
+}
+.tbicon.rhg {
+    background-position:-40px 0px;
+}
+.tbicon.bhg {
+    background-position: -60px 0px;
+}
+.lcicon {
+    width: 20px;
+    height: 20px;
+    border: 1px;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    display: block;
+    float: left;
+    text-align: center;
+    line-height: 20px;
+    font-size: 14px;
+    color: #FFF;
+}
+.lcicon.w{background: #3c8bd4}
+.lcicon.q{background: #4fc0e8}

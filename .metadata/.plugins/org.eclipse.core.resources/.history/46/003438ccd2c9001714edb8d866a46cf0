@@ -1,0 +1,14 @@
+package test;
+
+import java.util.Properties;
+import java.util.UUID;
+
+public class Test {
+	public static void main(String[] args) {
+		String code = UUID.randomUUID().toString();
+		code.replace("", "-");
+		System.out.println(code);
+		Properties p = new Properties();
+		
+	}
+}

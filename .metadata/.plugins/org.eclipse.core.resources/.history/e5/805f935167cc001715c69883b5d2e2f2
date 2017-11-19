@@ -1,0 +1,29 @@
+function checkUserInfo() {
+	var flag = $("user_check_info_flag").val();
+	flag = flag.trim();
+	if(flag != "1") {
+		$("a[name='gotoLoanPage']").prop('href', '');
+		if(confirm('您尚未实名认证,请前往认证')) {
+			$("a[name='gotoLoanPage']").prop('href', 'loan3/home');
+			return true;			
+		} else {
+			return false;
+		}
+	}
+	return true;
+}
+function checkUserInfo4Invest() {
+	alert("1231123");
+	var flag = $("user_check_info_flag").val();
+	flag = flag.trim();
+	if(flag != "1") {
+		$("a[name='gotoInvest']").prop('href', '');
+		if(confirm('您尚未实名认证,请前往认证')) {
+			$("a[name='gotoInvest']").prop('href', 'loan3/home');
+			return true;			
+		} else {
+			return false;
+		}
+	}
+	return true;
+}

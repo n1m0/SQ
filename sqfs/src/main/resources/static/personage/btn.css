@@ -1,0 +1,96 @@
+﻿.btn {
+    font-size: 13px;
+    display: block;
+    border: 1px solid #d1d2d2;
+    border-radius: 3px;
+    -webkit-border-radius:3px;
+    -moz-border-radius:3px;
+    color: #666;
+    padding: 0 13px;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+.btn.btnv1 {
+    height: 26px;
+    line-height: 26px;
+    width: 77px;
+}
+.btn.btnv1.h {
+    height: 38px;
+    line-height: 38px;
+}
+.btn.btnv2 {
+    width: 146px;
+    height: 36px;
+    line-height: 36px;
+}
+.btn.btnv3 {
+    width: 213px;
+    height: 36px;
+    line-height: 36px;
+}
+.btn.btnv4 {
+    width: 252px;
+    height: 36px;
+    line-height: 36px;
+}
+.btn.btnv5 {
+    width: 61px;
+    height: 31px;
+    line-height: 31px;
+}
+.btn.btn-y {
+    border: 1px solid #96c32a  ;
+    background: #96c32a  ;
+    color: #FFF !important;
+}
+.btn.btn-g {
+    border: 1px solid #9faab2  ;
+    background: #9faab2  ;
+    color: #FFF !important;
+}
+.btn.btn-s {
+    border: 1px solid #58b039;
+    background: #58b039;
+    color: #FFF !important;
+}
+.btn.btn-y:hover {
+    background: #7ba80e;
+    border: 1px solid #7ba80e;
+}
+.btn.btn-x {
+    border: 1px solid #96c32a ;
+    background: #fff;
+    color: #96c32a  !important;
+}
+.btn.btn-n {
+    border: 1px solid #d1d2d2;
+    background: #d1d2d2;
+    color: #fff !important;
+}
+.btn.btn-x:hover {
+    border: 1px solid #7ba80e ;
+    background: #FFF ;
+    color: #7ba80e !important;
+}
+.btn.btn-w {
+    border: 1px solid #e99825;
+    background: #e99825;
+    color: #FFF !important;
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+}
+.hetong .btn-link{
+  background-color: #98b9e6;
+  font-size: 14px !important;
+  display: inline-block;
+  height: 26px;
+  width: 67px;
+  line-height: 26px;
+  text-align: center;
+  color: #fff !important;
+  border-radius: 3px;
+  margin-right: 10px;
+}

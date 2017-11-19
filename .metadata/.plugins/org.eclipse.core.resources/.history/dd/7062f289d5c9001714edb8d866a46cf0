@@ -1,0 +1,16 @@
+package test;
+
+import java.util.Properties;
+import java.util.UUID;
+
+import redis.clients.jedis.Jedis;
+
+public class Test {
+	public static void main(String[] args) {
+		String str = MD5Util.encode2hex("123456");
+		System.out.println(str);
+		boolean a = str.equals(MD5Util.encode2hex("123456"));
+		System.out.println(a);
+		Jedis jedis = new Jedis(host);
+	}
+}

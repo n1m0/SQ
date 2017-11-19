@@ -1,0 +1,218 @@
+﻿/****************************/
+/***********bybeihua*********/
+/******v:0.1 2014-09-16******/
+/****************************/
+/* 全局默认样式 */
+html,body,h1,h2,h3,h4,h5,h6,div,dl,dt,dd,ul,ol,li,p,blockquote,pre,hr,figure,table,caption,th,td,form,fieldset,legend,input,button,textarea,menu{margin:0;padding:0;}
+header,footer,section,article,aside,nav,hgroup,address,figure,figcaption,menu,details{display:block;}
+table{border-collapse:collapse;border-spacing:0;}
+caption,th{text-align:left;font-weight:normal;}
+html,body,fieldset,img,iframe,abbr{border:0;}
+iframe{ border: 1px solid #FFF;}
+i,cite,em,var,address,dfn{font-style:normal;}
+[hidefocus],summary{outline:0;}
+li{list-style:none;}
+h1,h2,h3,h4,h5,h6,small{font-size:100%;}
+sup,sub{font-size:83%;}
+pre,code,kbd,samp{font-family:inherit;}
+q:before,q:after{content:none;}
+textarea{overflow:auto;resize:none;}/*去除输入域可拖动*/
+label,summary{cursor:default;}
+a,button{cursor:pointer;}/*链接按钮强制手型*/
+h1,h2,h3,h4,h5,h6,em,strong,b{font-weight:bold;}/*标题粗体*/
+del,ins,u,s,a,a:hover{text-decoration:none;}/*全局去除下划线*/
+body,textarea,input,button,select,keygen,legend{font:14px/1.14 "Microsoft YaHei","Lucida Sans Unicode","Myriad Pro","Hiragino Sans GB","Heiti SC",Verdana,simsun,\5b8b\4f53;color:#444;outline:0;}/*全局字体样式*/
+body{background:none;border: none;}/*全局页面背景色 min-width: 980px; */
+.min-wa{ min-width: 100px !important;}
+a{color:#96c32a;outline:none;blr:expression(this.onFocus=this.blur());}
+a:hover {
+    color: #7ba80e;
+    text-decoration: none; 
+}
+/*全局链接颜色*/
+/* 功能性样式 */
+.f-cb:after,.f-cbli li:after{display:block;clear:both;visibility:hidden;height:0;overflow:hidden;content:".";}
+/*设置或检索对象的缩放比例、触发ie的hasLayout属性，清除浮动、清除margin的重叠*/
+.f-cb,.f-cbli li{zoom:1;}
+.f-ib{display:inline-block !important;*display:inline;*zoom:1;}
+/*设置或检索对象的缩放比例、触发ie的hasLayout属性，清除浮动、清除margin的重叠*/
+/*显示隐藏*/
+.f-dn{display:none;}
+.f-db{display:block !important;}
+/*显示隐藏*/
+/*左右浮动*/
+.f-fl{float:left;}
+.f-fr{float:right;}
+/*左右浮动*/
+/*相对定位*/
+.f-pr{position:relative;}
+.f-prz{position:relative;zoom:1;}
+/*相对定位*/
+.f-oh{overflow:hidden;}
+/*字体*/
+.f-ff0{font-family:arial,\5b8b\4f53;}
+.f-ff1{font-family:"Microsoft YaHei",\5fae\8f6f\96c5\9ed1,arial,\5b8b\4f53;}
+/*字体*/
+/*字体大小*/
+.f-fs12{font-size:12px !important;}
+.f-fs13{font-size:13px !important;}
+.f-fs14{font-size:14px !important;}
+.f-fs15{font-size:15px !important;}
+.f-fs16{font-size:16px !important;}
+.f-fs18{font-size:18px !important;}
+.f-fs20{font-size:20px !important;}
+.f-fs22{font-size:22px !important;}
+.f-fs24{ font-size: 24px !important;}
+.f-fs25{ font-size: 25px !important;}
+.f-fs28{font-size:28px !important;}
+/*字体大小*/
+/*颜色*/
+.f-cr1{ color: #e99825 !important;}
+.f-cr2{ color: #96c32a !important;}
+.f-cr3{color: #6dbc89 !important}
+.f-crf{ color: #FFF !important;}
+.f-cr6{ color: #666 !important;}
+.f-crr{ color: red}
+.f-crg{ color: green}
+.f-cr4{ color: #444}
+.f-cr7{ color: #3070a8;}
+.f-cr8{ color: #61a800;}
+.f-cr9{ color: #555;}
+.f-cr88{ color: #888888;}
+.f-crf8 {color:#f87f2a !important}
+.f-cr5f {
+    color: #5fbe47 !important;
+}
+
+.f-bg {
+    background: #a873c6; line-height: 18px;height:20px; width: 20px; color:#fff;border-radius:4px;
+}
+.f-bgf{background: #FFF;}
+    /*颜色*/
+/*字体粗细体*/
+.f-fwn{font-weight:normal;}
+.f-fwb{font-weight:bold;}
+/*字体粗细体*/
+/*字体粗细体*/
+/*字体左右对齐*/
+.f-tal{text-align:left !important;}
+.f-tac{text-align:center !important;}
+.f-tar{text-align:right !important;}
+/*字体左右对齐*/
+/*字体两端对齐*/
+.f-taj{text-align:justify;text-justify:inter-ideograph;}
+/*字体两端对齐*/
+/*垂直对齐*/
+.f-vam,.f-vama *{vertical-align:middle;}
+/*垂直对齐*/
+/*顶部对齐*/
+.f-vat{vertical-align:top;}
+/*顶部对齐*/
+/*强制不换行*/
+.f-wsn{word-wrap:normal;white-space:nowrap;}
+/*强制不换行*/
+/*保留空白符换行*/
+.f-pre{overflow:hidden;text-align:left;white-space:pre-wrap;word-wrap:break-word;word-break:break-all;}
+/*保留空白符换行*/
+/*忽略空白符换行*/
+.f-wwb{white-space:normal;word-wrap:break-word;word-break:break-all;}
+/*忽略空白符换行*/
+/*文本缩进*/
+.f-ti{overflow:hidden;text-indent:-30000px;}
+.f-ti2{text-indent:2em;}
+/*文本缩进*/
+/*行高*/
+.f-lhn{line-height:normal;}
+.f-lh20{line-height:20px;}
+.f-lh23{line-height:23px;}
+.f-lh25{line-height:25px !important;}
+.f-lh65{line-height:65px !important;}
+/*行高*/
+/*是否下划线*/
+.f-tdu,.f-tdu:hover{text-decoration:underline;}
+.f-tdn,.f-tdn:hover{text-decoration:none;}
+/*是否下划线*/
+.f-toe{overflow:hidden;word-wrap:normal;white-space:nowrap;text-overflow:ellipsis;}
+/*鼠标指针*/
+.f-csp{cursor:pointer;}
+.f-csd{cursor:default;}
+.f-csh{cursor:help;}
+.f-csm{cursor:move;}
+/*鼠标指针*/
+/*设置能容不可选择*/
+.f-usn{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none;}
+/*设置能容不可选择*/
+/*居中*/
+.f-pwc{ width: 1120px;margin: 0 auto;}
+.f-mpwc{min-width: 1176px}
+.f-w150{ width: 150px !important;}
+.f-wao{ width: auto !important;}
+.f-wm{ margin: 0 auto !important;}
+/*居中*/
+/*是否有下边线*/
+.f-bb{ border-bottom:1px solid #cfd0d0}
+.f-bt{ border-top:1px solid #cfd0d0}
+.f-btn{ border-top: none !important;}
+/*是否有下边线*/
+
+/*边距*/
+.f-fmb{ margin-bottom: 130px;}.f-fmb-lg{ margin-bottom: 260px;}/*增加页面底部边距*/
+.f-pdl{ padding-left: 2em}/*左边距*/
+.f-pdl2{padding-left:45px}
+.f-pdl3{padding-left:80px}
+.f-mt0{ margin-top: 0 !important;}
+.f-mt2{ margin-top:2px !important;}
+.f-mt9{ margin-top: 9px !important;}
+.f-mt5{ margin-top: 5px !important;}
+.f-mt6{ margin-top: 6px !important;}
+.f-mt10{ margin-top: 10px !important;}
+.f-mt15{ margin-top: 15px !important;}
+.f-mt20{ margin-top:20px !important;}
+.f-mt21{ margin-top:21px !important;}
+.f-mt30{ margin-top: 30px !important;}
+.f-mt50{ margin-top: 50px !important;}
+.f-mt70{ margin-top: 70px !important;}
+.f-mt100{ margin-top: 100px !important;}
+.f-mb0{ margin-bottom: 0px !important;}
+.f-mb5{ margin-bottom: 5px !important;}
+.f-mb10{ margin-bottom: 10px !important;}
+.f-mb15{ margin-bottom: 15px !important;}
+.f-mb20{ margin-bottom: 20px !important;}
+.f-mb30{ margin-bottom: 30px !important;}
+.f-mb40{ margin-bottom:40px !important;}
+.f-mb50{ margin-bottom: 50px !important;}
+.f-ml0{ margin-left: 0px !important;}
+.f-ml5{ margin-left: 5px !important;}
+.f-ml10{ margin-left: 10px !important;}
+.f-ml15{ margin-left: 15px !important;}
+.f-ml20{ margin-left: 20px !important;}
+.f-ml30{ margin-left: 30px !important;}
+.f-ml50{ margin-left: 50px !important;}
+.f-ml60{ margin-left: 60px !important;}
+.f-ml90{ margin-left: 90px !important;}
+.f-ml100{ margin-left: 100px !important;}
+.f-mr5{ margin-right: 5px !important;}
+.f-mr10{ margin-right: 10px !important;}
+.f-mr15{ margin-right: 15px !important;}
+.f-mr30{ margin-right: 30px !important;}
+.f-mr50{ margin-right: 50px !important;}
+/*边距*/
+/*分割线*/
+.f-line80{ height: 1px;width: 80px;border-bottom: 1px solid #a9a9a9;margin: 0 auto;}
+.f-dashedline {
+    height: 1px;
+    width: 100%;
+    margin: 42px 0 21px 0;
+    border-bottom: 1px dashed #b9b9b9;
+}
+.f-line {
+    height: 1px;border-bottom: 1px solid #d1d2d2;margin: 0 auto;
+}
+.f-bgf {
+    background-color: #FFF !important;
+}
+.clearfix:after{content:".";visibility:hidden;display:block;height:0;clear:both}
+/*宽度*/
+.f-w50{ width: 50%}
+/*self*/
+.b-main{ width: 1120px;margin: 0px auto 30px;overflow: hidden;}

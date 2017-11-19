@@ -1,0 +1,142 @@
+10
+
+dir
+310
+svn://192.168.188.33/sqfs/src/main/resources/static/bresources/tiny_mce/plugins
+svn://192.168.188.33
+
+
+
+2017-11-11T09:51:46.774854Z
+3
+liangshizhong
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+9017c111-c503-884a-9b0d-c8cc34febbd3
+
+advhr
+dir
+
+advimage
+dir
+
+advlink
+dir
+
+advlist
+dir
+
+autolink
+dir
+
+autoresize
+dir
+
+autosave
+dir
+
+bbcode
+dir
+
+contextmenu
+dir
+
+directionality
+dir
+
+emotions
+dir
+
+example
+dir
+
+example_dependency
+dir
+
+fullpage
+dir
+
+fullscreen
+dir
+
+iespell
+dir
+
+inlinepopups
+dir
+
+insertdatetime
+dir
+
+layer
+dir
+
+legacyoutput
+dir
+
+lists
+dir
+
+media
+dir
+
+nonbreaking
+dir
+
+noneditable
+dir
+
+pagebreak
+dir
+
+paste
+dir
+
+preview
+dir
+
+print
+dir
+
+save
+dir
+
+searchreplace
+dir
+
+spellchecker
+dir
+
+style
+dir
+
+tabfocus
+dir
+
+table
+dir
+
+template
+dir
+
+visualchars
+dir
+
+wordcount
+dir
+
+xhtmlxtras
+dir
+

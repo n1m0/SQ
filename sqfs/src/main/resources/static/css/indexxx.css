@@ -1,0 +1,9 @@
+body{
+	background: #f0f0f0;
+	font-size: 30px;
+}
+.box{
+	width: 500px;
+	height: 300px;
+	border: 1px solid #f0f0f0;
+}

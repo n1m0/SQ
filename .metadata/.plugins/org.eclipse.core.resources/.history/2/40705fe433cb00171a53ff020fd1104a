@@ -1,0 +1,27 @@
+package test;
+
+import java.util.Calendar;
+import java.util.Properties;
+import java.util.UUID;
+
+import com.sqfs.utils.ApiException;
+import com.sqfs.utils.DefaultApi;
+
+import redis.clients.jedis.Jedis;
+
+public class Test {
+	public static void main(String[] args) {
+		/*String str = MD5Util.encode2hex("123456");
+		System.out.println(str);
+		boolean a = str.equals(MD5Util.encode2hex("123456"));
+		System.out.println(a);*/
+		
+		System.out.println(Math.random()*9); 
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.MINUTE,5);
+		System.out.println(calendar.getTime());
+		
+		
+		
+	}
+}

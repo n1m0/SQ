@@ -1,0 +1,59 @@
+# 生产环境服务URL
+#    1) context-path: 项目名
+server:
+  address: 192.168.188.33
+  port: 8080
+  context-path: /sq
+# 数据库连接配置
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://192.168.188.11:3306/sqfs
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+##########################################################
+# 配置druid连接属性: 
+#     @see com.sqfs.config.bean.DruidDataSourceProperties
+# initialSize ：初始连接数
+# maxActive : 最大连接数
+# minIdle : 最小空闲连接数
+# maxWait ： 最大等待时间（等待获取连接）
+# timeBetweenEvictionRunsMillis : 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+# minEvictableIdleTimeMillis : 配置一个连接在池中最小生存的时间，单位是毫秒
+# validationQuery : 数据库SQL语句验证
+# testOnBorrow : 获取连接时是否验证连接是否可用
+# testOnReturn : 返回连接时是否验证连接是否可用
+# testWhileIdle : 建议配置为true，不影响性能，并且保证安全性
+# poolPreparedStatements : 是否缓存sql
+# maxPoolPreparedStatementPerConnectionSize : 缓存PSCache的大小
+  druid:
+     initialSize: 1
+     maxActive: 20
+     minIdle: 5
+     maxWait: 60000
+     timeBetweenEvictionRunsMillis: 60000
+     minEvictableIdleTimeMillis: 300000
+     validationQuery: select 1
+     testOnBorrow: true
+     testOnReturn: false
+     testWhileIdle: true
+     poolPreparedStatements: true
+     maxPoolPreparedStatementPerConnectionSize: 20
+##########################################################
+# 配置redis连接属性:
+#   @see com.sqfs.config.bean.RedisProperties
+# port : 端口号
+# host : 连接地址
+# maxIdle : 最大空闲连接数
+# maxTotal ： 最大连接数
+# maxWait : 最大等待时间
+# testOnBorrow : 获取连接时是否验证连接是否可用
+   redis:
+     port: 6379
+     host: 192.168.188.11
+     maxIdle: 10
+     maxTotal: 100
+     maxWait: 60000
+     testOnBorrow: true
+##########################################################    

@@ -1,0 +1,54 @@
+# 通过spring.profiles.active来完成环境分离配置：
+#    1) spring.profiles.active = dev  --> 引入开发环境的配置文件
+#    2) spring.profiles.active = prod --> 引入生产环境的配置文件
+spring:
+   profiles: 
+     active: dev  #开发环境配置文件
+#     active: prod #生产环境配置文件
+######################################################
+# 配置jsp映射
+   mvc:
+     view:
+       prefix: /WEB-INF/pages/
+       suffix: .jsp
+# 配置静态资源映射
+     static-path-pattern: /**
+#   resources:
+#     static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+# jsp配置
+#spring:
+#   mvc:
+#     view:
+#       prefix:/WEB-INF/pages
+#       suffix:.jsp
+#   static-path-pattern: /resources/**
+######################################################
+#    设置Tomcat属性
+#server:
+#    tomcat:
+#      maxHttpHeaderSize: 8192
+######################################################
+# JavaMailSender 邮件发送的配置
+#   mail:
+#     host:
+#     username:
+#     
+#spring.mail.host=smtp.163.com
+#spring.mail.username=用户163邮箱
+#spring.mail.password=邮箱密码
+#spring.mail.properties.mail.smtp.auth=true
+#spring.mail.properties.mail.smtp.starttls.enable=true
+#spring.mail.properties.mail.smtp.starttls.required=true=======
+#      maxHttpHeaderSize: 8192
+# JavaMailSender 邮件发送的配置
+   mail:
+     host: smtp.qq.com
+     username: 1919787067@qq.com
+     password: hffqiufykezjcgjj
+     properties:
+       mail:
+         smtp:
+           auth: true
+           starttls:
+             enable: true
+             required: true

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete 3 elements from project &apos;sqfs&apos;&#x0D;&#x0A;- Original project: &apos;sqfs&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     PersonalCenterServiceImpl.java.mine&#x0D;&#x0A;     PersonalCenterServiceImpl.java.r290&#x0D;&#x0A;     PersonalCenterServiceImpl.java.r291" description="Delete elements" element1="src/main/java/com/sqfs/service/impl/PersonalCenterServiceImpl.java.r291" element2="src/main/java/com/sqfs/service/impl/PersonalCenterServiceImpl.java.r290" element3="src/main/java/com/sqfs/service/impl/PersonalCenterServiceImpl.java.mine" elements="0" flags="589830" id="org.eclipse.jdt.ui.delete" resources="3" stamp="1511058346939" subPackages="false" version="1.0"/>
+</session>

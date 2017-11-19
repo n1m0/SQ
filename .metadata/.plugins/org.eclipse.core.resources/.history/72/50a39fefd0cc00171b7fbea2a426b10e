@@ -1,0 +1,336 @@
+package com.sqfs.service.impl;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+
+import com.sqfs.beans.Invest;
+import com.sqfs.beans.Loan;
+import com.sqfs.beans.MoneyRecord;
+import com.sqfs.beans.SqUser;
+import com.sqfs.dto.PersonalFund;
+import com.sqfs.mapper.PersonalCenterMapper;
+import com.sqfs.service.PersonalCenterService;
+import com.sqfs.utils.DateUtil;
+import com.sqfs.utils.PersonalCenterPageUtil;
+/**
+* @author 丁振兴
+* @date 2017年11月7日 下午4:30:21 
+ */
+@Service
+public class PersonalCenterServiceImpl implements PersonalCenterService {
+	
+	@Autowired
+	private PersonalCenterMapper centerMapper;
+	/**
+	 * @Description 获取个人信息
+	 * @param user_id,用户id
+	 * @return SqUser 用户对象
+	 *
+	 */
+	public SqUser getSqUser(String user_id) {
+		SqUser sqUser = centerMapper.getSqUser(user_id);
+		if(sqUser!=null&&sqUser.getInvests()!=null){
+			
+			List<Invest> invests = sqUser.getInvests();
+			if(invests!=null){
+				//投资总金额(已投资总金额)
+				BigDecimal TotalPrincipal = new BigDecimal(0.00);
+				//投资总利息(已完成订单)
+				BigDecimal TotalAccrualt = new BigDecimal(0.00);
+				//待收本金(未完成本金)
+				BigDecimal PrincipalToBeCollected = new BigDecimal(0.00);
+				//待收利息(未完成利息)
+				BigDecimal AccrualtToBeCollected = new BigDecimal(0.00);
+				
+				for (Invest invest : invests) {//遍历
+					if("已结束".equals(invest.getTz_state())){
+						//每项已完成投资订单金额相加
+						TotalPrincipal = TotalPrincipal.add(invest.getTz_money());
+						//每项已完成投资订单利息相加
+						TotalAccrualt = TotalAccrualt.
+								add(invest.getTz_money().multiply(invest.getLoan().getRate().getRate_num_i()));
+						//每项已完成投资订单利息(每项订单金额乘以[multiply]投资利率)相加
+						AccrualtToBeCollected = AccrualtToBeCollected.
+								add(invest.getTz_money().multiply(invest.getLoan().getRate().getRate_num_i()));
+					}else if(!"其他".equals(invest.getTz_state())){//订单是否在进行状态
+						//每项正在进行中投资订单本金
+						PrincipalToBeCollected = PrincipalToBeCollected.add(invest.getTz_money());
+						
+						//每项正在进行中投资订单利息(每项订单金额乘以[multiply]投资利率)相加
+						AccrualtToBeCollected = AccrualtToBeCollected.
+								add(invest.getTz_money().multiply(invest.getLoan().getRate().getRate_num_i()));
+						//回款金额
+						invest.setPrincipalAndAccrualt(
+								invest.getTz_money().add(
+										invest.getTz_money().multiply(
+												invest.getLoan().getRate().getRate_num_i())).setScale(2, BigDecimal.ROUND_DOWN));
+						//利息
+						invest.setAccrualt(invest.getTz_money().multiply(
+												invest.getLoan().getRate().getRate_num_i()).setScale(2, BigDecimal.ROUND_DOWN));
+					}
+				}
+				//待收本息(未完成本金加利息)
+				BigDecimal PrincipalAndAccrualt = PrincipalToBeCollected.add(AccrualtToBeCollected);
+				sqUser.setPersonalFund(new PersonalFund());
+				sqUser.getPersonalFund().setTotalPrincipal(TotalPrincipal.setScale(2, BigDecimal.ROUND_DOWN));//保留两位小数,直接删除多余位的小数
+				sqUser.getPersonalFund().setTotalAccrualt(TotalAccrualt.setScale(2, BigDecimal.ROUND_DOWN));
+				sqUser.getPersonalFund().setPrincipalToBeCollected(PrincipalToBeCollected.setScale(2, BigDecimal.ROUND_DOWN));
+				sqUser.getPersonalFund().setAccrualtToBeCollected(AccrualtToBeCollected.setScale(2, BigDecimal.ROUND_DOWN));
+				sqUser.getPersonalFund().setPrincipalAndAccrualt(PrincipalAndAccrualt.setScale(2, BigDecimal.ROUND_DOWN));
+			}
+			if(sqUser.getAccount_balance()!=null){
+				//账户余额
+				sqUser.getPersonalFund().setAccount_balance(sqUser.getAccount_balance().setScale(2, BigDecimal.ROUND_DOWN));
+			}
+		}else{
+			return null;
+		}
+		return sqUser;
+	}
+	/**
+	 * 
+	 * @Description 通过用户id获取用户的所有借贷订单
+	 * @param user_id 用户id
+	 * @return List<Loan> 借贷订单集合
+	 *
+	 */
+	public List<Loan> getLoansByUserId(String user_id) {
+		// TODO Auto-generated method stub
+		return centerMapper.getLoansByUserId(user_id);
+	}
+	/**
+	 * 
+	 * @Description 通过用户id获取用户的所有投资订单
+	 * @param user_id 用户id
+	 * @return List<Invest> 投资订单集合
+	 *
+	 */
+	public SqUser getInvestByUserId(String user_id) {
+		List<Invest> invests = centerMapper.getInvestByUserId(user_id);
+		SqUser sqUser = new SqUser();
+		
+		if(invests!=null){
+			BigDecimal totalPrincipal = new BigDecimal(0.00);//累计投资
+			BigDecimal totalAccrualt = new BigDecimal(0.00);//累计收益
+			BigDecimal principalToBeCollected = new BigDecimal(0.00);//待收本金
+			BigDecimal accrualtToBeCollected = new BigDecimal(0.00);//待收收益
+			
+			for (Invest invest : invests) {
+				totalPrincipal = totalPrincipal.add(invest.getTz_money());//累计投资
+				if("已结束".equals(invest.getTz_state())){
+					totalAccrualt = totalAccrualt.add(invest.getAccrualt());//累计利息
+				}else if(!"其他".equals(invest.getTz_state())){
+					principalToBeCollected = principalToBeCollected.add(invest.getTz_money());//待收本金
+					accrualtToBeCollected = accrualtToBeCollected.add(invest.getAccrualt());//待收收益
+				}
+			}
+			sqUser.setInvests(invests);
+			sqUser.setPersonalFund(new PersonalFund());
+			sqUser.getPersonalFund().setTotalPrincipal(totalPrincipal);
+			sqUser.getPersonalFund().setTotalAccrualt(totalAccrualt);
+			sqUser.getPersonalFund().setPrincipalToBeCollected(principalToBeCollected);
+			sqUser.getPersonalFund().setAccrualtToBeCollected(accrualtToBeCollected);
+		}
+		return sqUser;
+	}
+	/**
+	 * 
+	 * @Description 通过id获取借贷订单
+	 * @param loan_dd_id 借贷订单id
+	 * @return Loan 借贷对象
+	 *
+	 */
+	public Loan getLoansByLoan_dd_id(String loan_dd_id) {
+		// TODO Auto-generated method stub
+		return centerMapper.getLoansByLoan_dd_id(loan_dd_id);
+	}
+	/**
+	 * 
+	 * @Description 根据类型、日期和用户id查询用户资金交易信息
+	 * @param user_id 用户id String trade_type 交易类型  String tdate 日期标识
+	 * @return List<MoneyRecord> 资金记录集合
+	 *
+	 */
+	public SqUser getMoneyRecordTypeAndDate(String user_id,String trade_type,String tdate,int page){
+		//用户对象
+		SqUser sqUser = new SqUser();
+		//资金记录对象
+		MoneyRecord moneyRecord = new MoneyRecord();
+		//获取时间工具对象
+		DateUtil dateUtil = new DateUtil();
+		if(user_id != null &&user_id != ""){//是否登录,id是否为空
+			moneyRecord.setUser_id(user_id);
+			sqUser.setUser_id(user_id);
+			if(trade_type != null && trade_type != "" && !"全部".equals(trade_type)){//类型
+				moneyRecord.setTrade_type(trade_type);
+				sqUser.setTrade_type(trade_type);
+			}
+			if(tdate != null && tdate !="全部" ){//时间
+				sqUser.setTrade_date(tdate);
+				if("今天".equals(tdate)){
+					moneyRecord.setTrade_date(dateUtil.getDay());//今天
+				}else if("最近一周".equals(tdate)){
+					moneyRecord.setTrade_date(dateUtil.getAgoWeek());//一周
+				}else if("一个月".equals(tdate)){
+					moneyRecord.setTrade_date(dateUtil.getOneMonth());//一个月
+				}else if("六个月".equals(tdate)){
+					moneyRecord.setTrade_date(dateUtil.getSixMonth());//六个月
+				}
+			}
+			//获取资金总条数
+			int totalNum = centerMapper.getMoneyRecordTotalNum(moneyRecord);
+			PersonalCenterPageUtil.totalNum = totalNum;//总行数
+			PersonalCenterPageUtil.currentPage = page;//当前页
+			PersonalCenterPageUtil.showRows = 2;//每页显示条数
+			PersonalCenterPageUtil.init();//初始化
+			moneyRecord.setStartNum(PersonalCenterPageUtil.startNum);//设置起始行
+			moneyRecord.setShowRows(PersonalCenterPageUtil.showRows);//设置结束行
+			List<MoneyRecord> moneyRecords = centerMapper.getMoneyRecordTypeAndDate(moneyRecord);
+			if(moneyRecords != null){
+				sqUser.setMoneyRecords(moneyRecords);
+			}
+		}
+		return sqUser;
+	}
+	/**
+	 * 
+	 * @Description 通过用户id获取用户的所有投资订单
+	 * @param user_id 用户id
+	 * @return List<Invest> 投资订单集合
+	 *
+	 */
+	public SqUser getInvestsIngByUserId(String user_id){
+		List<Invest> invests = centerMapper.getInvestsIngByUserId(user_id);
+		SqUser sqUser = new SqUser();
+		
+		if(invests!=null){
+			
+			
+			BigDecimal principalToBeCollected = new BigDecimal(0.00);//待收本金
+			BigDecimal accrualtToBeCollected = new BigDecimal(0.00);//待收收益
+			
+			for (Invest invest : invests) {
+				//回款时间
+				if(invest.getLoan().getSp_time2() != null){
+					invest.setLeadTime(DateUtil.afterTime(invest.getLoan().getSp_time2(), invest.getLoan().getCommencement_date(), invest.getLoan().getRate().getHk_time(), 0));
+				}else{
+					invest.setLeadTime(DateUtil.afterTime(invest.getLoan().getSp_time1(), invest.getLoan().getCommencement_date(), invest.getLoan().getRate().getHk_time(), 0));
+				}
+				
+				principalToBeCollected = principalToBeCollected.add(invest.getTz_money());//待收本金
+				accrualtToBeCollected = accrualtToBeCollected.add(invest.getAccrualt());//待收收益
+				invest.setPrincipalAndAccrualt(principalToBeCollected.add(accrualtToBeCollected));//回款金额
+			}
+			sqUser.setPersonalFund(new PersonalFund());
+			sqUser.getPersonalFund().setPrincipalToBeCollected(principalToBeCollected);//待收总本金
+			sqUser.getPersonalFund().setAccrualtToBeCollected(accrualtToBeCollected);//待收总收益
+			sqUser.setInvests(invests);
+			
+		}
+		return sqUser;
+	}
+	/**
+	 * 充值
+	 * @param card
+	 * @param money
+	 * @param user_id
+	 * @return
+	 */
+	@Transactional
+	public boolean Recharge(String card,BigDecimal money,String user_id,String str){
+		if(true){
+			int i = 0;
+<<<<<<< .mine
+			i = centerMapper.Recharge(money, user_id);
+=======
+				i = centerMapper.Recharge(money, user_id);
+>>>>>>> .r291
+			if(i>0){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		return false;
+	}
+	/**
+	 * 提现
+	 * @param money
+	 * @param user_id
+	 * @return
+	 */
+	@Override
+	public boolean Withdraw(String bankCard,BigDecimal money, String user_id) {
+		if(true){
+			int a = centerMapper.Withdraw(money, user_id);
+			if(a>0){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		return false;
+	}
+	/**
+	 * 添加邮箱
+	 * @param user_id
+	 * @param email
+	 * @return
+	 */
+	@Override
+	public boolean addEmail(String user_id, String email) {
+		int a = centerMapper.addEmail(user_id, email);
+		if(a>0){
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 添加真实姓名和身份证
+	 * @param modelAndView
+	 * @param user_id
+	 * @param user_name
+	 * @param id_card
+	 * @return
+	 */
+	@Override
+	public boolean addIDCard( String user_id,String t_name, String id_card) {
+		int a = centerMapper.addIDCard(user_id, t_name, id_card);
+		if(a>0){
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * 逻辑删除投资记录
+	 * @param tz_dd_id
+	 */
+	@Override
+	public boolean deleteInvest(String tz_dd_id) {
+		int a = centerMapper.deleteInvest(tz_dd_id);
+		if(a>0){
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * 修改手机号
+	 * @param user_id
+	 * @param phone
+	 * @return
+	 */
+	@Override
+	public boolean updatePhone(String user_id, String phone) {
+		int a = centerMapper.updatePhone(user_id, phone);
+		if(a>0){
+			return true;
+		}
+		return false;
+	}
+}

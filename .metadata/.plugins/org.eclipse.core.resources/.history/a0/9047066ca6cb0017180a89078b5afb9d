@@ -1,0 +1,274 @@
+package com.sqfs.mapper;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Many;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.One;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.Update;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.sqfs.beans.Invest;
+import com.sqfs.beans.Loan;
+import com.sqfs.beans.MoneyRecord;
+import com.sqfs.beans.SqUser;
+import com.sqfs.provider.PersonalCenterProvider;
+/**
+ * 个人中心Mapper
+* @Description: TODO(这里用一句话描述这个类的作用) 
+* @author 丁振兴
+ */
+@Mapper
+public interface PersonalCenterMapper {
+	/**
+	 * @Description 获取个人信息
+	 * @param user_id,用户id
+	 * @return SqUser 用户对象
+	 *
+	 */
+	@Select(" select user_id,phone,d_pwd,user_name,"
+			+ "bank_card,account_balance,user_pic,"
+			+ "t_name,id_card,z_pwd,"
+			+ "birthDate,sex,"
+			+ "email,education,hy_status,"
+			+ "h_address,x_address,w_position,"
+			+ "m_income,w_year,jj_name,"
+			+ "jj_name_phone,jj_name_rela,id_card_z,"
+			+ "id_card_f,hukouben,jiehunzheng,"
+			+ "work_info,liushuizhang,zhengxin,"
+			+ "shang_time,third_party_payment,tombstone "
+			+ "from sq_user where user_id=#{user_id} and (tombstone is null or tombstone != '1')")
+	@Results({
+		@Result(id=true,property="user_id",column="user_id",javaType=String.class),
+		@Result(property="phone",column="phone",javaType=String.class),
+		@Result(property="d_pwd",column="d_pwd",javaType=String.class),
+		@Result(property="user_name",column="user_name",javaType=String.class),
+		@Result(property="bank_card",column="bank_card",javaType=String.class),
+		@Result(property="account_balance",column="account_balance",javaType=BigDecimal.class),
+		@Result(property="user_pic",column="user_pic",javaType=String.class),
+		@Result(property="t_name",column="t_name",javaType=String.class),
+		@Result(property="id_card",column="id_card",javaType=String.class),
+		@Result(property="z_pwd",column="z_pwd",javaType=String.class),
+		@Result(property="birthDate",column="birthDate",javaType=Date.class),
+		@Result(property="sex",column="sex",javaType=String.class),
+		@Result(property="email",column="email",javaType=String.class),
+		@Result(property="education",column="education",javaType=String.class),
+		@Result(property="hy_status",column="hy_status",javaType=String.class),
+		@Result(property="h_address",column="h_address",javaType=String.class),
+		@Result(property="x_address",column="x_address",javaType=String.class),
+		@Result(property="w_position",column="w_position",javaType=String.class),
+		@Result(property="m_income",column="m_income",javaType=BigDecimal.class),
+		@Result(property="w_year",column="w_year",javaType=int.class),
+		@Result(property="jj_name",column="jj_name",javaType=String.class),
+		@Result(property="jj_name_phone",column="jj_name_phone",javaType=String.class),
+		@Result(property="jj_name_rela",column="jj_name_rela",javaType=String.class),
+		@Result(property="id_card_z",column="id_card_z",javaType=String.class),
+		@Result(property="id_card_f",column="id_card_f",javaType=String.class),
+		@Result(property="hukouben",column="hukouben",javaType=String.class),
+		@Result(property="jiehunzheng",column="jiehunzheng",javaType=String.class),
+		@Result(property="work_info",column="work_info",javaType=String.class),
+		@Result(property="liushuizhang",column="liushuizhang",javaType=String.class),
+		@Result(property="zhengxin",column="zhengxin",javaType=String.class),
+		@Result(property="shang_time",column="shang_time",javaType=Date.class),
+		@Result(property="third_party_payment",column="third_party_payment",javaType=String.class),
+		@Result(property="tombstone",column="tombstone",javaType=String.class),
+		@Result(property="loans",javaType=List.class,column="user_id",
+				many=@Many(select="com.sqfs.mapper.PersonalCenterMapper.getLoansByUserId")),
+		@Result(property="invests",javaType=List.class,column="user_id",
+				many=@Many(select="com.sqfs.mapper.PersonalCenterMapper.getInvestByUserId")),
+		@Result(property="moneyRecords",column="user_id",javaType=List.class,
+				many=@Many(select="com.sqfs.mapper.PersonalCenterMapper.getMoneyRecordByUserId"))
+	})
+	SqUser getSqUser(@Param("user_id") String user_id);
+	/**
+	 * 
+	 * @Description 通过用户id获取用户资金记录集合
+	 * @param user_id 用户id
+	 * @return List<MoneyRecord> 资金记录集合
+	 *
+	 */
+	@Select("select money_record_id,user_id,trade_type,trade_money,balance,trade_date,remark "
+			+ "from "
+				+ "money_record "
+			+ "where "
+				+ "user_id = #{user_id} "
+			+ "order by "
+				+ "trade_date desc")
+	List<MoneyRecord> getMoneyRecordByUserId(@PathVariable("user_id") String user_id);
+	/**
+	 * 
+	 * @Description 按类型与日期多条件分页查询资金记录
+	 * @param MoneyRecord moneyRecord
+	 * @return List<MoneyRecord>
+	 *
+	 */
+	@SelectProvider(type=PersonalCenterProvider.class,method="getMoneyRecordByUserId")
+	List<MoneyRecord> getMoneyRecordTypeAndDate(MoneyRecord moneyRecord);
+	/**
+	 * 
+	 * @Description 按类型与日期多条件查询资金记录总条数
+	 * @param MoneyRecord moneyRecord
+	 * @return int
+	 *
+	 */
+	@SelectProvider(type=PersonalCenterProvider.class,method="getMoneyRecordTotalNum")
+	Integer getMoneyRecordTotalNum(MoneyRecord moneyRecord);
+	
+	
+	
+	/**
+	 * 
+	 * @Description 通过用户id获取用户的所有借贷订单
+	 * @param user_id 用户id
+	 * @return List<Loan> 借贷订单集合
+	 *
+	 */
+	@Select("select l.loan_dd_id,l.user_id,l.loan_money,"
+			+ "l.loan_name,l.loan_date,l.loan_num,"
+			+ "l.daihuanbx,l.loan_type,l.rate_id,"
+			+ "l.hk_type,l.loan_use,l.sh_level,"
+			+ "l.dd_state,l.sp_time1,l.sp_time2,"
+			+ "l.g_id,l.g_id2,l.remark1,"
+			+ "l.remark2,l.release_date,l.commencement_date,l.min_money,l.tran_id,"
+			+ "r.rate_id 'rate.rate_id',"
+			+ "r.hk_time 'rate.hk_time',"
+			+ "r.rate_num_l 'rate.rate_num_l',"
+			+ "r.rate_num_i 'rate.rate_num_i' "
+			+ "from loan_dd l,rate r where l.rate_id = r.rate_id and  l.user_id=#{user_id}")
+	List<Loan> getLoansByUserId(@Param("user_id") String user_id);
+	/**
+	 * 
+	 * @Description 通过用户id获取用户的所有投资订单
+	 * @param user_id 用户id
+	 * @return List<Invest> 投资订单集合
+	 *
+	 */
+	@Select("select tz_dd_id,user_id,tz_money,"
+			+ "tz_time,accrualt,loan_dd_id,dqye,tz_state,remark,tombstone from tz_dd where (tombstone is null or tombstone !='1') and user_id = #{user_id}")
+	@Results({
+		@Result(property="tz_dd_id",column="tz_dd_id",javaType=String.class),
+		@Result(property="user_id",column="user_id",javaType=String.class),
+		@Result(property="tz_money",column="tz_money",javaType=BigDecimal.class),
+		@Result(property="tz_time",column="tz_time",javaType=Date.class),
+		@Result(property="accrualt",column="accrualt",javaType=BigDecimal.class),
+		@Result(property="loan_dd_id",column="loan_dd_id",javaType=String.class),
+		@Result(property="dqye",column="dqye",javaType=BigDecimal.class),
+		@Result(property="tz_state",column="tz_state",javaType=String.class),
+		@Result(property="remark",column="remark",javaType=String.class),
+		@Result(property="tombstone",column="tombstone",javaType=String.class),
+		@Result(property="loan",column="loan_dd_id",javaType=com.sqfs.beans.Loan.class,
+				one=@One(select="com.sqfs.mapper.PersonalCenterMapper.getLoansByLoan_dd_id")),
+	})
+	List<Invest> getInvestByUserId(@Param("user_id") String user_id);
+	
+	/**
+	 * 
+	 * @Description 通过用户id获取用户的所有投资订单
+	 * @param user_id 用户id
+	 * @return List<Invest> 投资订单集合
+	 *
+	 */
+	@Select("select tz_dd_id,user_id,tz_money,"
+			+ "tz_time,accrualt,loan_dd_id,dqye,tz_state,remark,tombstone from tz_dd "
+			+ "where (tombstone is null or tombstone !='1') and user_id = #{user_id} and tz_state != '已结束'")
+	@Results({
+		@Result(property="tz_dd_id",column="tz_dd_id",javaType=String.class),
+		@Result(property="user_id",column="user_id",javaType=String.class),
+		@Result(property="tz_money",column="tz_money",javaType=BigDecimal.class),
+		@Result(property="tz_time",column="tz_time",javaType=Date.class),
+		@Result(property="accrualt",column="accrualt",javaType=BigDecimal.class),
+		@Result(property="loan_dd_id",column="loan_dd_id",javaType=String.class),
+		@Result(property="dqye",column="dqye",javaType=BigDecimal.class),
+		@Result(property="tz_state",column="tz_state",javaType=String.class),
+		@Result(property="remark",column="remark",javaType=String.class),
+		@Result(property="tombstone",column="tombstone",javaType=String.class),
+		@Result(property="loan",column="loan_dd_id",javaType=com.sqfs.beans.Loan.class,
+				one=@One(select="com.sqfs.mapper.PersonalCenterMapper.getLoansByLoan_dd_id")),
+	})
+	List<Invest> getInvestsIngByUserId(@Param("user_id") String user_id);
+	
+	/**
+	 * 
+	 * @Description 通过id获取借贷订单
+	 * @param loan_dd_id 借贷订单id
+	 * @return Loan 借贷对象
+	 *
+	 */
+	@Select("select l.loan_dd_id,l.user_id,l.loan_money,"
+			+ "l.loan_name,l.loan_date,l.loan_num,"
+			+ "l.daihuanbx,l.loan_type,l.rate_id,"
+			+ "l.hk_type,l.loan_use,l.sh_level,"
+			+ "l.dd_state,l.sp_time1,l.sp_time2,"
+			+ "l.g_id,l.g_id2,l.remark1,"
+			+ "l.remark2,l.release_date,l.commencement_date,l.min_money,l.tran_id,"
+			+ "r.rate_id 'rate.rate_id',"
+			+ "r.hk_time 'rate.hk_time',"
+			+ "r.rate_num_l 'rate.rate_num_l',"
+			+ "r.rate_num_i 'rate.rate_num_i' "
+			+ "from loan_dd l,rate r where l.rate_id = r.rate_id and  l.loan_dd_id=#{loan_dd_id}")
+	Loan getLoansByLoan_dd_id(@Param("loan_dd_id") String loan_dd_id);
+	/**
+	 * 充值
+	 * @param card
+	 * @param money
+	 * @param user_id
+	 * @return
+	 */
+	@Update("update sq_user set account_balance = account_balance+#{money} where user_id=#{user_id}")
+	int Recharge(@Param("money")BigDecimal money,@Param("user_id")String user_id);
+	
+	@Update("update sq_user set account_balance = account_balance+#{money} where user_id=#{user_id}")
+	int Recharge2(@Param("money")BigDecimal money,@Param("user_id")String user_id);
+	/**
+	 * 提现
+	 * @param money
+	 * @param user_id
+	 * @return
+	 */
+	@Update("update sq_user set account_balance = account_balance-#{money} where user_id=#{user_id}")
+	int Withdraw(@Param("money")BigDecimal money,@Param("user_id")String user_id);
+	/**
+	 * 添加邮箱
+	 * @param user_id
+	 * @param email
+	 * @return
+	 */
+	@Update("update sq_user set email = #{email} where user_id = #{user_id}")
+	int addEmail(@Param("user_id")String user_id,@Param("email")String email);
+	
+	
+	/**
+	 * 添加真实姓名和身份证
+	 * @param modelAndView
+	 * @param user_id
+	 * @param user_name
+	 * @param id_card
+	 * @return
+	 */
+	@Insert("update sq_user set t_name = #{t_name}, id_card =#{id_card}, third_party_payment = '1' where user_id = #{user_id}")
+	int addIDCard(@Param("user_id")String user_id,@Param("t_name")String t_name,@Param("id_card")String id_card);
+	/**
+	 * 逻辑删除投资记录
+	 * @param tz_dd_id
+	 */
+	@Update("update tz_dd set tombstone = '1' where tz_dd_id = #{tz_dd_id}")
+	int deleteInvest(@Param("tz_dd_id")String tz_dd_id);
+	/**
+	 * 修改手机号
+	 * @param user_id
+	 * @param phone
+	 * @return
+	 */
+	@Update("update sq_user set phone = #{phone} where user_id = #{user_id}")
+	int updatePhone(@Param("user_id")String user_id,@Param("phone")String phone);
+}
+
+

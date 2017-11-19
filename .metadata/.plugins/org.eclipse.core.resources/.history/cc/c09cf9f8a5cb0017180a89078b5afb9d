@@ -1,0 +1,402 @@
+package com.sqfs.controller;
+
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import redis.clients.jedis.Jedis;
+
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
+import com.aliyuncs.exceptions.ClientException;
+import com.sqfs.beans.SqUser;
+import com.sqfs.service.PersonalCenterEmailService;
+import com.sqfs.service.PersonalCenterService;
+import com.sqfs.utils.AliyunMessageUtil;
+import com.sqfs.utils.PersonalCenterPageUtil;
+import com.sqfs.utils.RandomNumUtil;
+/**
+ * 
+* @ClassName: PersonalCenterController 
+* @Description: TODO(这里用一句话描述这个类的作用) ,用于页面跳转
+* @author 丁振兴
+* @date 2017年11月7日 下午4:26:30 
+*
+*/
+@Controller
+@RequestMapping("/trans/PersonalCenter")
+public class PersonalCenterController {
+	
+	@Autowired
+	private PersonalCenterService personalCenterService;
+	/**
+	 * 
+	* @author 丁振兴 
+	* @date 2017年11月7日 下午3:41:59 
+	* @Description: TODO(固定页面跳转) 
+	* @param @param index
+	* @param @return    设定文件 
+	* @return String    返回类型 
+	* @throws 
+	 */
+	@RequestMapping("/{index}/home")
+	public String PersonalCenter(@PathVariable("index")String index){
+		
+		return index;
+	}
+	/**
+	 * 
+	* @author 丁振兴 
+	* @date 2017年11月7日 下午3:56:45 
+	* @Description: TODO(我的账户) 
+	* @param @param modelAndView
+	* @param @return    设定文件 
+	* @return ModelAndView    返回类型 
+	* @throws
+	 */
+	@RequestMapping("/homePage/{id}")
+	public ModelAndView homePage(ModelAndView modelAndView,@PathVariable("id") String id){
+		modelAndView.setViewName("PersonalCenter/个人中心首页/home");
+		
+		return modelAndView;
+	}
+	
+	
+	
+	@RequestMapping("/getPensonalInformation/{user_id}")
+	public ModelAndView getPensonalInformation(HttpSession session,ModelAndView modelAndView,@PathVariable("user_id") String user_id){
+		SqUser sqUser = personalCenterService.getSqUser(user_id);
+		if(sqUser.getEmail() != null && !sqUser.getEmail().equals("") ){
+			sqUser.setEmail(sqUser.getEmail().replaceAll("(\\w?)(\\w+)(\\w)(@\\w+\\.[a-z]+(\\.[a-z]+)?)", "$1****$3$4"));
+		}
+		if(sqUser.getPhone() != null && !sqUser.getPhone().equals("")){
+			sqUser.setPhone(sqUser.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
+		}
+		session.setAttribute("info", sqUser);
+		modelAndView.addObject("sqUser", sqUser);
+		modelAndView.setViewName("个人中心首页");
+		return modelAndView;
+	}
+	
+	/**
+	 * 
+	 * @Description 通过用户id,多条件类型、日期分页获取用户投资订单
+	 * @param user_id 用户id  trade_type 类型  trade_date 日期  page 页码
+	 * @return List<Invest> 投资订单集合
+	 *
+	 */
+	@RequestMapping("/getMoneyRecord/{user_id}")
+	public ModelAndView getMoneyRecord(ModelAndView modelAndView,
+										@PathVariable("user_id") String user_id,
+										String trade_type,String trade_date,String page){
+		int currentPage = 0;
+		if(page != null &&page !=""){
+			currentPage = new Integer(page);
+			modelAndView.addObject("currentPage", currentPage);
+		}else{
+			modelAndView.addObject("currentPage", 1);
+		}
+		SqUser sqUser = personalCenterService.getMoneyRecordTypeAndDate(user_id,trade_type,trade_date, currentPage);
+		sqUser.setTrade_type(trade_type);
+		sqUser.setTrade_date(trade_date);
+		modelAndView.addObject("sqUser", sqUser);
+		modelAndView.addObject("currentPage", PersonalCenterPageUtil.currentPage);
+		modelAndView.addObject("totalPage", PersonalCenterPageUtil.totalPage);
+		
+		modelAndView.setViewName("个人中心-资金记录 ");
+		return modelAndView;
+	}
+	/**
+	 * 
+	 * @Description 通过用户id获取用户的所有投资订单
+	 * @param user_id 用户id
+	 * @return List<Invest> 投资订单集合
+	 *
+	 */
+	@RequestMapping("/getDepositsHistory/{user_id}")
+	public ModelAndView getInvestByUserId(ModelAndView modelAndView,@PathVariable("user_id") String user_id){
+		SqUser sqUser = personalCenterService.getInvestByUserId(user_id);
+		sqUser.setUser_id(user_id);
+		modelAndView.addObject("sqUser", sqUser);
+		modelAndView.setViewName("个人中心-投资记录");
+		return modelAndView;
+	}
+	
+	/**
+	 * 
+	 * @Description 根据用户id获取用户正在投资的投资项目
+	 * @param user_id 用户id
+	 * @return 个人中心-投资记录.jsp页面; List<Invest>invests 正在投资项目的集合
+	 *
+	 */
+	@RequestMapping("/getReturnedMoneyPlan/{user_id}")
+	public ModelAndView getInvestsIngByUserId(ModelAndView modelAndView,@PathVariable("user_id") String user_id){
+		SqUser sqUser = personalCenterService.getInvestsIngByUserId(user_id);
+		 
+		sqUser.setUser_id(user_id);
+		modelAndView.addObject("sqUser", sqUser);
+		modelAndView.setViewName("个人中心-回款计划");
+		return modelAndView;
+	}
+	/**
+	 * 跳转到个人中心-开通第三方页面
+	 * @param modelAndView
+	 * @param user_id
+	 * @return
+	 */
+	@RequestMapping("/OpenThirdParty/{user_id}")
+	public ModelAndView openThirdParty(ModelAndView modelAndView,@PathVariable("user_id")String user_id){
+		SqUser sqUser = personalCenterService.getSqUser(user_id);
+		if(sqUser != null){
+			if(sqUser.getEmail() != null && !"".equals(sqUser.getEmail()) ){//邮箱是否绑定
+				sqUser.setEmail(sqUser.getEmail().replaceAll("(\\w?)(\\w+)(\\w)(@\\w+\\.[a-z]+(\\.[a-z]+)?)", "$1****$3$4"));
+				modelAndView.setViewName("个人中心-开通第三方1");
+			}else{
+				modelAndView.setViewName("个人中心-开通第三方");
+			}
+			sqUser.setPhone(sqUser.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
+			modelAndView.addObject("sqUser", sqUser);
+		}
+		return modelAndView;
+	}
+	
+	@Autowired
+	private PersonalCenterEmailService personalCenterEmailService;
+	/**
+	 * 开通第三方Eamil的注册与激活
+	 * @param modelAndView
+	 * @param sqUser
+	 * @param email
+	 * @param status
+	 * @return
+	 */
+	@RequestMapping("/PersonalCenterEmail/{user_id}/{status}/{validateCode}")
+	public ModelAndView PersonalCenterEmailControl( String email,
+													@PathVariable("user_id")String user_id,
+													@PathVariable("status")String status,
+													@PathVariable("validateCode")String validateCode){
+		ModelAndView modelAndView = new ModelAndView();
+		if( user_id != null && user_id !=""){
+			if("register".equals(status)){
+				boolean b = personalCenterEmailService.processregister(email, user_id);
+				if(b){
+					modelAndView.setViewName("redirect:/trans/PersonalCenter/getPensonalInformation/"+user_id);
+				}else{
+					modelAndView.setViewName("error");
+				}
+			}
+			if("activate".equals(status)){
+				boolean a = personalCenterEmailService.processActivate(email, validateCode);
+				if(a){//验证成功插入邮箱
+					boolean b = personalCenterService.addEmail(user_id, email);
+					if(b){
+						SqUser sqUser = personalCenterService.getSqUser(user_id);
+						sqUser.setEmail(sqUser.getEmail().replaceAll("(\\w?)(\\w+)(\\w)(@\\w+\\.[a-z]+(\\.[a-z]+)?)", "$1****$3$4"));
+						sqUser.setPhone(sqUser.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
+						modelAndView.addObject("sqUser", sqUser);
+						modelAndView.setViewName("个人中心-开通第三方1");
+					}else{
+						modelAndView.setViewName("error");
+					}
+				}else{
+					modelAndView.setViewName("error");
+				}
+			}
+		}
+		return modelAndView;
+	}
+	/**
+	 * 添加真实姓名和身份证
+	 * @param modelAndView
+	 * @param user_id
+	 * @param user_name
+	 * @param id_card
+	 * @return
+	 */
+	@RequestMapping("/addIDCard/{user_id}")
+	public ModelAndView addIDCard(ModelAndView modelAndView,@PathVariable("user_id")String user_id,String t_name,String id_card ){
+		boolean b = personalCenterService.addIDCard(user_id, t_name, id_card);
+		if(b){
+			modelAndView.setViewName("forward:/trans/PersonalCenter/getPensonalInformation/"+user_id);
+		}else{
+			modelAndView.setViewName("error");
+		}
+		return modelAndView;
+	}
+	/**
+	 *充值
+	 * @param modelAndView
+	 * @param card
+	 * @param money
+	 * @param user_id
+	 * @return
+	 */
+	@RequestMapping("/Recharge/{user_id}/{recharge}")
+	public ModelAndView Recharge(ModelAndView modelAndView,String bankCard,BigDecimal money,@PathVariable("user_id")String user_id,@PathVariable("recharge")String recharge){
+		SqUser sqUser = personalCenterService.getSqUser(user_id);
+		//用户是否为空
+		if(sqUser != null ){
+			//是否已注册第三方
+			if(sqUser.getEmail() != null && !sqUser.getEmail().equals("")
+					&& sqUser.getId_card() !=null && !sqUser.getId_card().equals("")
+					&& sqUser.getT_name() !=null && !sqUser.getT_name().equals("")){
+				if("1".equals(recharge)){//进行充值
+					boolean flage = personalCenterService.Recharge(bankCard, money, user_id);
+					//是否充值成功
+					if(flage){
+						//重新返回到跳转页面
+						modelAndView.setViewName("forward:/trans/PersonalCenter/Recharge/"+user_id+"/2");
+					}else{//未充值成功
+						modelAndView.setViewName("error");
+					}
+				}else if("2".equals(recharge)){//充值成功或准备充值页面
+					modelAndView.addObject("sqUser", sqUser);
+					modelAndView.setViewName("个人中心-充值1");
+				}else{
+					modelAndView.setViewName("error");
+				}
+			}else{//未注册第三方
+				modelAndView.addObject("sqUser", sqUser);
+				modelAndView.setViewName("个人中心-充值");
+			}
+		}else{
+			modelAndView.setViewName("error");
+		}
+		return modelAndView;
+	}
+	/**
+	 * 提现
+	 * @param modelAndView
+	 * @return
+	 */
+	@RequestMapping("/Withdraw/{user_id}/{withdraw}")
+	public ModelAndView withdraw(ModelAndView modelAndView,@PathVariable("user_id")String user_id,@PathVariable("withdraw")String withdraw,String bankCard,BigDecimal money){
+		SqUser sqUser = personalCenterService.getSqUser(user_id);
+		if(sqUser != null){
+			//是否已注册第三方
+			if(sqUser.getEmail() != null && !sqUser.getEmail().equals("")
+					&& sqUser.getId_card() !=null && !sqUser.getId_card().equals("")
+					&& sqUser.getT_name() !=null && !sqUser.getT_name().equals("")){
+				
+				if("1".equals(withdraw)){//进行充值
+					boolean flage = personalCenterService.Withdraw(bankCard, money, user_id);
+					//是否提现成功
+					if(flage){
+						//重新返回到跳转页面
+						modelAndView.setViewName("forward:/trans/PersonalCenter/Withdraw/"+user_id+"/2");
+					}else{//未提现成功
+						modelAndView.setViewName("error");
+					}
+				}else if("2".equals(withdraw)){//提现成功或准备提现页面
+					modelAndView.addObject("sqUser", sqUser);
+					modelAndView.setViewName("个人中心-提现1");
+				}else{
+					modelAndView.setViewName("error");
+				}
+			}else{//未注册第三方
+				modelAndView.addObject("sqUser", sqUser);
+				modelAndView.setViewName("个人中心-提现");
+			}
+		}else{
+			modelAndView.setViewName("error");
+		}
+		return modelAndView;
+	}
+	/**
+	 * 逻辑删除投资记录
+	 * @param tz_dd_id
+	 */
+	@RequestMapping("/deleteInvest/{user_id}/{tz_dd_id}")
+	public ModelAndView deleteInvest(@PathVariable("user_id")String user_id,@PathVariable("tz_dd_id")String tz_dd_id){
+		ModelAndView modelAndView = new ModelAndView();
+		boolean b = personalCenterService.deleteInvest(tz_dd_id);
+		if(b){
+			modelAndView.setViewName("forward:/trans/PersonalCenter/getDepositsHistory/"+user_id);
+		}else{
+			modelAndView.setViewName("error");
+		}
+		return modelAndView;
+	}
+	/**
+	 * 账户设置
+	 * @param modelAndView
+	 * @param user_id
+	 * @return
+	 */
+	@RequestMapping("/accountSetting/{user_id}")
+	public ModelAndView accountSetting(ModelAndView modelAndView,@PathVariable("user_id")String user_id){
+		SqUser sqUser = personalCenterService.getSqUser(user_id);
+		/*if(!sqUser.getEmail().equals("")){
+			sqUser.setEmail(sqUser.getEmail().replaceAll("(\\w?)(\\w+)(\\w)(@\\w+\\.[a-z]+(\\.[a-z]+)?)", "$1****$3$4"));
+		}
+		if(!sqUser.getPhone().equals("")){
+			sqUser.setPhone(sqUser.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
+		}*/
+		modelAndView.addObject("sqUser", sqUser);
+		modelAndView.setViewName("个人中心-账户设置");
+		return modelAndView;
+	}
+	
+	@Autowired
+	Jedis jedis;
+	/**
+	 * 阿里云手机短信验证
+	 * @param phone
+	 * @return
+	 * @throws ClientException
+	 */
+	@RequestMapping("/sendMsg")
+	public @ResponseBody Map<String, String> sendMsg(String phone) throws ClientException{
+		Map<String, String> map = new HashMap<String, String>();
+		
+		
+		String phoneNumber = "17328766901";
+	    String randomNum = RandomNumUtil.createRandomNum(6);
+	    String jsonContent = "{\"number\":\"" + randomNum + "\"}";
+	    
+	    //验证码存入jedis,有效期5分钟
+	    jedis.set("randomNum", randomNum);
+	    jedis.pexpire("randomNum", 60*2*1000L);
+	    jedis.set("phoneNumber", phoneNumber);
+	    jedis.pexpire("phoneNumber", 60*2*1000L);
+	    //传回前台的验证码
+	    map.put("randomNum", randomNum);
+	    
+	    Map<String, String> paramMap = new HashMap<String, String>();
+	    paramMap.put("phoneNumber", phoneNumber);
+	    paramMap.put("msgSign", "SQ金服");
+	    paramMap.put("templateCode", "SMS_111785140");
+	    paramMap.put("jsonContent", jsonContent);
+	    //发送短信验证
+	    SendSmsResponse sendSmsResponse = AliyunMessageUtil.sendSms(paramMap);
+	   	if(!(sendSmsResponse.getCode() != null && sendSmsResponse.getCode().equals("OK"))) {
+	        if(sendSmsResponse.getCode() == null) {
+	            //这里可以抛出自定义异常
+	        }
+	        if(!sendSmsResponse.getCode().equals("OK")) {
+	            //这里可以抛出自定义异常
+	        }
+	    }
+		return map;
+	}
+	@RequestMapping("/updatePhone/{user_id}")
+	public ModelAndView updatePhone(ModelAndView modelAndView,@PathVariable("user_id")String user_id,String phone){
+		boolean b = personalCenterService.updatePhone(user_id, phone);
+		if(b){
+			modelAndView.setViewName("forward:/trans/PersonalCenter/accountSetting/"+user_id);
+		}else{
+			modelAndView.setViewName("error");
+		}
+		return modelAndView;
+	}
+	
+}
